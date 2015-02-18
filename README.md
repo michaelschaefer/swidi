@@ -1,1 +1,1 @@
-# switching-diffusion
+# switchingdiffusion
