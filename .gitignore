@@ -1,3 +1,4 @@
+docs/build/*
 src/switchingdiffusion/.idea/
 *.pyc
-*.py~
+*.*~
