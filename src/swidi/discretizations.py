@@ -34,11 +34,14 @@ class EulerMaruyamaDiscretization(DiscretizationInterface):
         initial_condition = self.problem.initial_condition
         markov_chain = self.problem.markov_chain
 
-        dim = len(initial_condition)
-        dw = WienerProcess(dim, self.dt)
+        dim = self.problem.diffusion.range.dim
+        n = dim[0]
+        m = 1 if len(dim) == 1 else dim[1]
+
+        dw = WienerProcess(m, self.dt)
 
         states = np.zeros((self.time_intervals+1,))
-        trajectory = np.zeros((self.time_intervals+1, dim))
+        trajectory = np.zeros((self.time_intervals+1, n))
 
         for i, t in enumerate(self._time_steps):
             if i == 0:
@@ -46,7 +49,7 @@ class EulerMaruyamaDiscretization(DiscretizationInterface):
                 x = initial_condition
             else:
                 r = markov_chain.evolve(x)
-                x += drift.evaluate(x, r, t) * self.dt + diffusion.evaluate(x, r, t) * dw.step()
+                x += drift.evaluate(x, r, t) * self.dt + (diffusion.evaluate(x, r, t).dot(dw.step())).ravel()
 
             states[i] = r
             trajectory[i, :] = x.copy()

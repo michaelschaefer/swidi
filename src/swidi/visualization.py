@@ -12,9 +12,8 @@ def visualize_trajectory_1d(trajectory, states=None, discretization=None):
     assert states is None or (isinstance(states, np.ndarray) and states.shape[0] == trajectory.shape[0])
     assert discretization is None or isinstance(discretization, DiscretizationInterface)
 
-    n = trajectory.shape[0]
     if discretization is None:
-        x = np.arange(n)
+        x = np.arange(trajectory.shape[0])
     else:
         x = discretization.time_steps
 
@@ -30,4 +29,14 @@ def visualize_trajectory_1d(trajectory, states=None, discretization=None):
     plt.plot(x, y)
     plt.title("State X(t)")
 
+    plt.show()
+
+
+def visualize_trajectory_2d(trajectory):
+    assert isinstance(trajectory, np.ndarray) and len(trajectory.shape) == 2 and trajectory.shape[1] == 2
+
+    x = trajectory[:, 0]
+    y = trajectory[:, 1]
+    plt.plot(x, y)
+    plt.gca().set_aspect("equal")
     plt.show()

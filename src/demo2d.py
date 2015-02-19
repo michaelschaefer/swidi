@@ -6,33 +6,35 @@ from swidi.discretizations import EulerMaruyamaDiscretization
 from swidi.interfaces import FunctionInterface, VectorSpace
 from swidi.problem import ProblemDescription
 from swidi.stochasticprocesses import DiscreteTimeMarkovChain
-from swidi.visualization import visualize_trajectory_1d
+from swidi.visualization import visualize_trajectory_2d
 
 
 class DiffusionOperator(FunctionInterface):
 
     def __init__(self):
         super(DiffusionOperator, self).__init__()
-        self._source = VectorSpace((1,))
-        self._range = VectorSpace((1, 1))
+        self._source = VectorSpace((2,))
+        self._range = VectorSpace((2, 2))
 
     def evaluate(self, x, r=None, t=None):
         assert r is None or isinstance(r, (float, int))
-        if r is None:
-            return self._range.ones()
-        else:
-            return self._range.ones() * r
+        return self.range.ones() * 0.01 * (1 + r)
 
 
 class DriftOperator(FunctionInterface):
 
     def __init__(self):
         super(DriftOperator, self).__init__()
-        self._source = VectorSpace((1,))
-        self._range = VectorSpace((1,))
+        self._source = VectorSpace((2,))
+        self._range = VectorSpace((2,))
 
     def evaluate(self, x, r, t):
-        return 1.0
+        assert isinstance(r, int)
+        if r == 0:
+            a = np.array([[0, -1], [1, 0]])
+        else:
+            a = np.array([[-1, 2], [-2, -1]])
+        return a.dot(x)
 
 
 class MarkovChainGenerator(FunctionInterface):
@@ -44,7 +46,7 @@ class MarkovChainGenerator(FunctionInterface):
         self._range = VectorSpace((self._dim,)*2)
 
     def evaluate(self, x, r=None, t=None):
-        return np.array([[-10, 10], [10, -10]])
+        return np.array([[-1, 1], [2, -2]])
 
 
 markov_generator = MarkovChainGenerator()
@@ -52,9 +54,9 @@ markov_chain = DiscreteTimeMarkovChain([0, 1], markov_generator, initial_state=0
 
 diffusion = DiffusionOperator()
 drift = DriftOperator()
-initial_condition = np.array([0.0])
+initial_condition = np.ones((2,))
 problem = ProblemDescription(drift, diffusion, markov_chain, initial_condition)
 
-discretization = EulerMaruyamaDiscretization(problem, time_range=(0, 1), time_intervals=1000)
-trajectory, states = discretization.solve(return_state=True)
-visualize_trajectory_1d(trajectory, states=states, discretization=discretization)
+discretization = EulerMaruyamaDiscretization(problem, time_range=(0, 10), time_intervals=1000)
+trajectory = discretization.solve()
+visualize_trajectory_2d(trajectory)
