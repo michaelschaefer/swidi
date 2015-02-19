@@ -2,11 +2,11 @@
 
 import numpy as np
 
-from switchingdiffusion.discretizations import EulerMaruyamaDiscretization
-from switchingdiffusion.la import OperatorInterface, VectorSpace
-from switchingdiffusion.problem import ProblemDescription
-from switchingdiffusion.stochasticprocesses import DiscreteTimeMarkovChain
-from switchingdiffusion.visualization import visualize_trajectory_1d
+from swidi.discretizations import EulerMaruyamaDiscretization
+from swidi.la import OperatorInterface, VectorSpace
+from swidi.problem import ProblemDescription
+from swidi.stochasticprocesses import DiscreteTimeMarkovChain
+from swidi.visualization import visualize_trajectory_1d
 
 
 class DiffusionOperator(OperatorInterface):
