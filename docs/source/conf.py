@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# switchingdiffusion documentation build configuration file, created by
+# swidi documentation build configuration file, created by
 # sphinx-quickstart on Wed Feb 18 19:31:38 2015.
 #
 # This file is execfile()d with the current directory set to its
@@ -51,7 +51,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'switchingdiffusion'
+project = u'swidi'
 copyright = u'2015, Michael Schaefer'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -184,12 +184,13 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'switchingdiffusiondoc'
+htmlhelp_basename = 'swididoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
+    'preamble': '\\usepackage{amssymb}'
 # The paper size ('letterpaper' or 'a4paper').
 #'papersize': 'letterpaper',
 
@@ -197,14 +198,14 @@ latex_elements = {
 #'pointsize': '10pt',
 
 # Additional stuff for the LaTeX preamble.
-#'preamble': '',
+#'preamble': ''
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'switchingdiffusion.tex', u'switchingdiffusion Documentation',
+  ('index', 'swidi.tex', u'swidi Documentation',
    u'Michael Schaefer', 'manual'),
 ]
 
@@ -234,7 +235,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'switchingdiffusion', u'switchingdiffusion Documentation',
+    ('index', 'swidi', u'swidi Documentation',
      [u'Michael Schaefer'], 1)
 ]
 
@@ -248,8 +249,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'switchingdiffusion', u'switchingdiffusion Documentation',
-   u'Michael Schaefer', 'switchingdiffusion', 'One line description of project.',
+  ('index', 'swidi', u'swidi Documentation',
+   u'Michael Schaefer', 'swidi', 'One line description of project.',
    'Miscellaneous'),
 ]
 
