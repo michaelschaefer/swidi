@@ -2,15 +2,15 @@
 
 import numpy as np
 
-from la import OperatorInterface
+from interfaces import FunctionInterface
 from stochasticprocesses import DiscreteTimeMarkovChain
 
 
 class ProblemDescription(object):
 
     def __init__(self, drift, diffusion, markov_chain, initial_condition):
-        assert isinstance(drift, OperatorInterface)
-        assert isinstance(diffusion, OperatorInterface)
+        assert isinstance(drift, FunctionInterface)
+        assert isinstance(diffusion, FunctionInterface)
         assert isinstance(markov_chain, DiscreteTimeMarkovChain)
         assert isinstance(initial_condition, np.ndarray)
 

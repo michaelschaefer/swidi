@@ -5,45 +5,70 @@ import numpy as np
 from scipy.linalg import expm
 import warnings
 
-from la import OperatorInterface
+from interfaces import FunctionInterface, MarkovChainInterface
 
 
-class DiscreteTimeMarkovChain(object):
+class DiscreteTimeMarkovChain(MarkovChainInterface):
 
-    def __init__(self, number_of_states, initial_state, generator):
-        assert isinstance(number_of_states, int) and number_of_states > 0
-        assert isinstance(initial_state, int) and 0 <= initial_state <= number_of_states
-        assert isinstance(generator, OperatorInterface)
+    def __init__(self, states, generator, initial_state=None, dt=None):
+        assert isinstance(states, (list, tuple)) and len(states) > 0
+        assert isinstance(generator, FunctionInterface)
+        assert initial_state is None or initial_state in states
+        assert dt is None or (isinstance(dt, float) and dt > 0)
 
-        self.states = [i for i in range(number_of_states)]
-        self.current_state = initial_state
-        self.dt = None
+        super(MarkovChainInterface, self).__init__()
 
-        assert generator.range.dim == ((len(self.states),) * 2)
+        self._states = states
+        self.number_of_states = len(self._states)
+        self._dt = dt
+
+        if initial_state is None:
+            self._current_state = self._states[0]
+        else:
+            self._current_state = self._states.index(initial_state)
+
+        assert generator.range.dim == ((self.number_of_states,) * 2)
         self.generator = generator
 
-    def set_timestep(self, dt):
-        assert isinstance(dt, float) and dt < 1.0
-        self.dt = dt
+    @property
+    def dt(self):
+        return self._dt
 
-    def step(self, x):
+    @dt.setter
+    def dt(self, value):
+        assert isinstance(value, float) and float > 0
+        if self._dt is None:
+            self._dt = value
+        else:
+            warnings.warn("This implementation allows the time step to be set only once!")
+
+    def evolve(self, x, dt=None):
         assert self.dt is not None, "Time step was not set!"
+        if dt is not None:
+            warnings.warn("This implementation uses a fixed time step. Parameter dt will be ignored!")
 
-        prob = expm(self.dt * self.generator.apply(x))
-        prob = np.cumsum(prob[self.current_state, :])
+        prob = expm(self.dt * self.generator.evaluate(x))
+        prob = np.cumsum(prob[self._current_state, :])
 
         xi = np.random.random()
         if xi < prob[0]:
-            self.current_state = 0
+            self._current_state = 0
         elif prob[-2] <= xi:
-            self.current_state = self.states[-1]
+            self._current_state = self.number_of_states - 1
         else:
-            for i in range(1, len(self.states)-1):
+            for i in range(1, self.number_of_states - 1):
                 if prob[i-1] <= xi < prob[i]:
-                    self.current_state = i
+                    self._current_state = i
                     break
 
-        return self.current_state
+        return self._states[self._current_state]
+
+    def reset(self, initial_state=None):
+        assert initial_state is None or initial_state in self._states
+        self._current_state = initial_state
+
+    def state(self):
+        return self._states[self._current_state]
 
 
 class WienerProcess(object):
